@@ -21,7 +21,6 @@ namespace WhatsOnTap
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddEnvironmentVariables()
-                .AddJsonFile("appsettings.json");
             Configuration = builder.Build();
         }
 
@@ -29,10 +28,9 @@ namespace WhatsOnTap
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration.GetConnectionString("WhatsOnTapContext");
+            services.AddEntityFrameworkNpgsql().AddDbContext<WhatsOnTapContext>(options => options.UseNpgsql(connectionString));
             services.AddMvc();
-
-            services.AddEntityFrameworknpgsql()
-                    .AddDbContext<WhatsOnTapContext>(options => options.Usenpgsql(Configuration["ConnectionStrings:DefaultConnection"]));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<WhatsOnTapContext>()
@@ -60,8 +58,9 @@ namespace WhatsOnTap
             });
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, WhatsOnTapContext db)
         {
+            db.Database.Migrate();
             app.UseStaticFiles();
             app.UseDeveloperExceptionPage();
             app.UseIdentity();
