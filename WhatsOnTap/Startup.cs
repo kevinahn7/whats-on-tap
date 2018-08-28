@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using WhatsOnTap.Models;
+using Npgsql;
 
 namespace WhatsOnTap
 {
@@ -30,9 +31,9 @@ namespace WhatsOnTap
         {
             services.AddMvc();
 
-            services.AddEntityFrameworkMySql()
-                    .AddDbContext<WhatsOnTapContext>(options => options.UseMySql(Configuration["ConnectionStrings:DefaultConnection"]));
-            
+            services.AddEntityFrameworknpgsql()
+                    .AddDbContext<WhatsOnTapContext>(options => options.Usenpgsql(Configuration["ConnectionStrings:DefaultConnection"]));
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<WhatsOnTapContext>()
                 .AddDefaultTokenProviders();
